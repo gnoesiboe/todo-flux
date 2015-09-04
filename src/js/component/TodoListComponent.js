@@ -3,7 +3,6 @@ var React = require('react'),
     _ = require('underscore');
 
 var TodoListComponent = React.createClass({
-
     render: function () {
         var todoComponents = [];
 
@@ -12,9 +11,7 @@ var TodoListComponent = React.createClass({
                 var todo = this.props.todos[key];
 
                 todoComponents.push(
-                    <li className="list-group-item" key={todo.id}>
-                        <TodoComponent todo={todo} />
-                    </li>
+                    <TodoComponent todo={todo} sort={this.sort} key={todo.id} />
                 );
             }
         }

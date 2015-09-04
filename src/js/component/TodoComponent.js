@@ -32,13 +32,15 @@ var TodoComponent = React.createClass({
         var dataFormatted = moment(this.props.todo.date).format('MM/DD');
 
         return (
-            <div className="js-todo checkbox">
-                <a href="#" className="pull-right" onClick={this.onDeleteClick}>x</a>
-                <label>
-                    <input type="checkbox" refs="checkbox" checked={this.props.todo.isCompleted} onChange={this.handleOnCheckboxChange} />
-                    <span className="text-muted">[{dataFormatted}]</span>&nbsp;-&nbsp;<strong>{this.props.todo.title}</strong>
-                </label>
-            </div>
+            <li className="list-group-item">
+                <div className="js-todo checkbox">
+                    <a href="#" className="pull-right" onClick={this.onDeleteClick}>x</a>
+                    <label>
+                        <input type="checkbox" refs="checkbox" checked={this.props.todo.isCompleted} onChange={this.handleOnCheckboxChange} />
+                        <span className="text-muted">[{dataFormatted}]</span>&nbsp;-&nbsp;<strong>{this.props.todo.title}</strong>
+                    </label>
+                </div>
+            </li>
         );
     }
 });
