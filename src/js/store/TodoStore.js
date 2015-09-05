@@ -3,10 +3,9 @@ var _ = require('underscore'),
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
     ActionConstants = require('./../constants/ActionConstants'),
     EventConstants = require('./../constants/EventConstants'),
-    moment = require('moment'),
     TodoCollection = require('./../collection/TodoCollection'),
     store = require('store'),
-    idGenerator = require('./../utilities/idGenerator');
+    todoFactory = require('./../factory/todoFactory');
 
 var STORAGE_NAMESPACE = 'todos';
 
@@ -16,25 +15,6 @@ var STORAGE_NAMESPACE = 'todos';
  * @private
  */
 var _todos = new TodoCollection(store.get(STORAGE_NAMESPACE, []));
-
-/**
- * @param {String} title
- * @param {String=} collection
- * @param {Object=} date
- *
- * @returns {Object}
- *
- * @private
- */
-var _createTodo = function (title, collection, date) {
-    return {
-        id: idGenerator.generateId(),
-        title: title,
-        isCompleted: false,
-        date: date || moment().format('YYYY-MM-DD'),
-        collection: collection || 'today'
-    };
-};
 
 /**
  * Saves the current state of the todo collection in the browser's
@@ -87,7 +67,7 @@ var _updateTodo = function (id, updates) {
  * @private
  */
 var _handleTodoCreate = function (action) {
-    _todos.add(_createTodo(action.title, action.collection, action.date));
+    _todos.add(todoFactory.createTodo(action.title, action.collection, action.date));
 
     _persistCollection();
 
