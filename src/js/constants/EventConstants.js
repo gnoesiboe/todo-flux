@@ -1,0 +1,3 @@
+module.exports = {
+    TODO_COLLECTION_CHANGE: 'TODO_COLLECTION_CHANGE'
+};

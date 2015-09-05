@@ -2,16 +2,10 @@ var _ = require('underscore'),
     EventEmitter = require('events').EventEmitter,
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
     ActionConstants = require('./../constants/ActionConstants'),
+    EventConstants = require('./../constants/EventConstants'),
     moment = require('moment'),
     TodoCollection = require('./../collection/TodoCollection'),
     store = require('store');
-
-/**
- * @constant
- *
- * @type {string}
- */
-var CHANGE_EVENT = 'change';
 
 /**
  * @type {Array}
@@ -163,7 +157,7 @@ var TodoStore = _.extend({}, EventEmitter.prototype, {
     emitChange: function() {
         console.log('EMIT: change event');
 
-        this.emit(CHANGE_EVENT);
+        this.emit(EventConstants.TODO_COLLECTION_CHANGE);
 
         return this;
     },
@@ -175,7 +169,7 @@ var TodoStore = _.extend({}, EventEmitter.prototype, {
      * @returns {TodoStore}
      */
     addChangeListener: function (callback) {
-        this.on(CHANGE_EVENT, callback);
+        this.on(EventConstants.TODO_COLLECTION_CHANGE, callback);
 
         return this;
     },
@@ -186,7 +180,7 @@ var TodoStore = _.extend({}, EventEmitter.prototype, {
      * @returns {TodoStore}
      */
     removeChangeListener: function (callback) {
-        this.removeListener(CHANGE_EVENT, callback);
+        this.removeListener(EventConstants.TODO_COLLECTION_CHANGE, callback);
 
         return this;
     }
