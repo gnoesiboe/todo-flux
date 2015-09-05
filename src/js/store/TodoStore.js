@@ -7,12 +7,14 @@ var _ = require('underscore'),
     TodoCollection = require('./../collection/TodoCollection'),
     store = require('store');
 
+var STORAGE_NAMESPACE = 'todos';
+
 /**
  * @type {Array}
  *
  * @private
  */
-var _todos = new TodoCollection(store.get('todos', []));
+var _todos = new TodoCollection(store.get(STORAGE_NAMESPACE, []));
 
 /**
  * Generates a unique id for a todo
@@ -53,7 +55,7 @@ var _createTodo = function (title, collection, date) {
 var _persistCollection = function () {
     console.log('persist collection');
 
-    store.set('todos', _todos.data);
+    store.set(STORAGE_NAMESPACE, _todos.data);
 };
 
 /**
