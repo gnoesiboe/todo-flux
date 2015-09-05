@@ -5,7 +5,8 @@ var _ = require('underscore'),
     EventConstants = require('./../constants/EventConstants'),
     moment = require('moment'),
     TodoCollection = require('./../collection/TodoCollection'),
-    store = require('store');
+    store = require('store'),
+    idGenerator = require('./../utilities/idGenerator');
 
 var STORAGE_NAMESPACE = 'todos';
 
@@ -15,17 +16,6 @@ var STORAGE_NAMESPACE = 'todos';
  * @private
  */
 var _todos = new TodoCollection(store.get(STORAGE_NAMESPACE, []));
-
-/**
- * Generates a unique id for a todo
- *
- * @returns {string}
- *
- * @private
- */
-var _generateId = function () {
-    return (+new Date() + Math.floor(Math.random() * 999999)).toString(36)
-};
 
 /**
  * @param {String} title
@@ -38,7 +28,7 @@ var _generateId = function () {
  */
 var _createTodo = function (title, collection, date) {
     return {
-        id: _generateId(),
+        id: idGenerator.generateId(),
         title: title,
         isCompleted: false,
         date: date || moment().format('YYYY-MM-DD'),
