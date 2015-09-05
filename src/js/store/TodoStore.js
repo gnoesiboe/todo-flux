@@ -7,14 +7,26 @@ var _ = require('underscore'),
     store = require('store');
 
 /**
+ * @constant
+ *
+ * @type {string}
+ */
+var CHANGE_EVENT = 'change';
+
+/**
  * @type {Array}
  *
  * @private
  */
 var _todos = new TodoCollection(store.get('todos', []));
 
-var CHANGE_EVENT = 'change';
-
+/**
+ * Generates a unique id for a todo
+ *
+ * @returns {string}
+ *
+ * @private
+ */
 var _generateId = function () {
     return (+new Date() + Math.floor(Math.random() * 999999)).toString(36)
 };
@@ -38,16 +50,12 @@ var _createTodo = function (title, collection, date) {
     };
 };
 
-/*var temp = [];
-
-temp.push(_createTodo('eerste'));
-temp.push(_createTodo('tweede'));
-temp.push(_createTodo('derde'));
-temp.push(_createTodo('tomorrow 1', moment('2015-09-04'), 'tomorrow'));
-temp.push(_createTodo('tomorrow 2', moment('2015-09-05'), 'tomorrow'));
-
-store.set('todos', temp);*/
-
+/**
+ * Saves the current state of the todo collection in the browser's
+ * local storage
+ *
+ * @private
+ */
 var _persistCollection = function () {
     console.log('persist collection');
 

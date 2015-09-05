@@ -59,13 +59,13 @@ var TodoAppComponent = React.createClass({
                 <hr />
                 <div className="row">
                     <div className="col-md-4">
-                        <TodoListComponent title="Today" todos={this.state.todosToday}/>
+                        <TodoListComponent title="Today" todos={this.state.todosToday} collection="today" />
                     </div>
                     <div className="col-md-4">
-                        <TodoListComponent title="Tomorrow" todos={this.state.todosTomorrow}/>
+                        <TodoListComponent title="Tomorrow" todos={this.state.todosTomorrow} collection="tomorrow" />
                     </div>
                     <div className="col-md-4">
-                        <TodoListComponent title="Later" todos={this.state.todosLater}/>
+                        <TodoListComponent title="Later" todos={this.state.todosLater} collection="later" />
                     </div>
                 </div>
             </div>

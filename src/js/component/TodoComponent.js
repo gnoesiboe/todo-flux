@@ -32,7 +32,7 @@ var TodoComponent = React.createClass({
         var dataFormatted = moment(this.props.todo.date).format('MM/DD');
 
         return (
-            <li className="list-group-item">
+            <li className="list-group-item" ref="todo" data-id={this.props.todo.id}>
                 <div className="js-todo checkbox">
                     <a href="#" className="pull-right" onClick={this.onDeleteClick}>x</a>
                     <label>
