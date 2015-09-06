@@ -7,135 +7,189 @@ var _ = require('underscore'),
     store = require('store'),
     todoFactory = require('./../factory/todoFactory');
 
-var STORAGE_NAMESPACE = 'todos';
-
-/**
- * @type {Array}
- *
- * @private
- */
-var _todos = new TodoCollection(store.get(STORAGE_NAMESPACE, []));
-
-/**
- * Saves the current state of the todo collection in the browser's
- * local storage
- *
- * @private
- */
-var _persistCollection = function () {
-    console.log('persist collection');
-
-    store.set(STORAGE_NAMESPACE, _todos.data);
-};
-
-/**
- * @param {String} id
- *
- * @return {Boolean}
- *
- * @private
- */
-var _deleteTodo = function (id) {
-    _todos.deleteTodo(id);
-
-    _persistCollection();
-};
-
-/**
- * @param {String} id
- * @param {Object} updates
- *
- * @return {Object|null}
- *
- * @private
- */
-var _updateTodo = function (id, updates) {
-    var todoIndex = _todos.find(id);
-
-    if (!_.isNumber(todoIndex)) {
-        return;
-    }
-
-    _todos.data[todoIndex] = _.extend({}, _todos.data[todoIndex], updates);
-
-    _persistCollection();
-};
-
-/**
- * @param {Object} action
- *
- * @private
- */
-var _handleTodoCreate = function (action) {
-    _todos.add(todoFactory.createTodo(action.title, action.collection, action.date));
-
-    _persistCollection();
-
-    TodoStore.emitChange();
-};
-
-/**
- * @param {Object} action
- *
- * @private
- */
-var _handleTodoUncompleted = function (action) {
-    _updateTodo(action.id, {
-        isCompleted: false
-    });
-
-    TodoStore.emitChange();
-};
-
-/**
- * @param {Object} action
- *
- * @private
- */
-var _handleTodoCompleted = function (action) {
-    _updateTodo(action.id, {
-        isCompleted: true
-    });
-
-    TodoStore.emitChange();
-};
-
-/**
- * @param {Object} action
- *
- * @private
- */
-var _handleTodoDelete = function (action) {
-    _deleteTodo(action.id);
-
-    TodoStore.emitChange();
-};
-
-/**
- * @type {Object}
- */
-var TodoStore = _.extend({}, EventEmitter.prototype, {
+var TodoStore = function () {
 
     /**
-     * @returns {Array}
+     * @type {Array|null}
+     *
+     * @private
      */
-    getAll: function () {
-        return _todos;
-    },
-
-    /**
-     * @returns {TodoStore}
-     */
-    emitChange: function() {
-        console.log('EMIT: change event');
-
-        this.emit(EventConstants.TODO_COLLECTION_CHANGE);
-
-        return this;
-    },
+    this._todos = null;
 
     /**
      *
+     * @type {string}
+     * @private
+     */
+    this._storageNamespace = 'todos';
+
+    TodoStore.prototype._init.apply(this, arguments);
+};
+
+_.extend(TodoStore.prototype, EventEmitter.prototype, {
+
+    /**
+     * @private
+     */
+    _init: function () {
+        this._initEventListeners();
+    },
+
+    /**
+     * @private
+     */
+    _initEventListeners: function () {
+        AppDispatcher.register(function (action) {
+            switch (action.type) {
+                case ActionConstants.TODO_CREATE:
+                    this._handleTodoCreate(action);
+                    break;
+
+                case ActionConstants.TODO_COMPLETED:
+                    this._handleTodoCompleted(action);
+                    break;
+
+                case ActionConstants.TODO_UNCOMPLETED:
+                    this._handleTodoUncompleted(action);
+                    break;
+
+                case ActionConstants.TODO_DELETE:
+                    this._handleTodoDelete(action);
+                    break;
+
+                default:
+                    console.log('TodoStore did not handle:', action);
+            }
+        }.bind(this));
+    },
+
+    /**
+     * @param {Object} action
+     *
+     * @private
+     */
+    _handleTodoDelete: function (action) {
+        this._deleteTodo(action.id);
+
+        this._emitChange();
+    },
+
+    /**
+     * @param {String} id
+     *
+     * @return {Boolean}
+     *
+     * @private
+     */
+    _deleteTodo: function (id) {
+        this._todos.deleteTodo(id);
+
+        this._persistCollection();
+    },
+
+    /**
+     * @param {Object} action
+     *
+     * @private
+     */
+    _handleTodoUncompleted: function (action) {
+        this._updateTodo(action.id, {
+            isCompleted: false
+        });
+
+        this._emitChange();
+    },
+
+    /**
+     * @param {String} id
+     * @param {Object} updates
+     *
+     * @return {Object|null}
+     *
+     * @private
+     */
+    _updateTodo: function (id, updates) {
+        var todoIndex = this._todos.find(id);
+
+        if (todoIndex === null) {
+            return;
+        }
+
+        this._todos.data[todoIndex] = _.extend({}, this._todos.data[todoIndex], updates);
+
+        this._persistCollection();
+    },
+
+    /**
+     * @param {Object} action
+     *
+     * @private
+     */
+    _handleTodoCompleted: function (action) {
+        this._updateTodo(action.id, {
+            isCompleted: true
+        });
+
+        this._emitChange();
+    },
+
+    /**
+     * Saves the current state of the todo collection in the browser's
+     * local storage
+     *
+     * @private
+     */
+    _persistCollection: function () {
+        store.set(this._storageNamespace, this._todos.data);
+    },
+
+    /**
+     * @param {Object} action
+     *
+     * @private
+     */
+    _handleTodoCreate: function (action) {
+        this._todos.add(todoFactory.createTodo(
+            action.title,
+            action.collection,
+            action.date
+        ));
+
+        this._persistCollection();
+
+        this._emitChange();
+    },
+
+    /**
+     * @returns {TodoCollection}
+     *
+     * @private
+     */
+    _importTodosFromStore: function () {
+        return new TodoCollection(
+            store.get(this._storageNamespace, [])
+        )
+    },
+
+    /**
+     * @private
+     */
+    _emitChange: function () {
+        this.emit(EventConstants.TODO_COLLECTION_CHANGE);
+    },
+
+    /**
+     * @returns {TodoCollection}
+     */
+    getAll: function () {
+        if (this._todos === null) {
+            this._todos = this._importTodosFromStore();
+        }
+
+        return this._todos;
+    },
+
+    /**
      * @param {Function} callback
      *
      * @returns {TodoStore}
@@ -158,27 +212,4 @@ var TodoStore = _.extend({}, EventEmitter.prototype, {
     }
 });
 
-AppDispatcher.register(function (action) {
-    switch (action.type) {
-        case ActionConstants.TODO_CREATE:
-            _handleTodoCreate(action);
-            break;
-
-        case ActionConstants.TODO_COMPLETED:
-            _handleTodoCompleted(action);
-            break;
-
-        case ActionConstants.TODO_UNCOMPLETED:
-            _handleTodoUncompleted(action);
-            break;
-
-        case ActionConstants.TODO_DELETE:
-            _handleTodoDelete(action);
-            break;
-
-        default:
-            console.log('TodoStore did not handle:', action);
-    }
-});
-
-module.exports = TodoStore;
+module.exports = new TodoStore();

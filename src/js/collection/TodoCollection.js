@@ -37,7 +37,7 @@ _.extend(TodoCollection.prototype, {
     },
 
     /**
-     * @param {Number} id
+     * @param {String} id
      * @returns {TodoCollection}
      */
     deleteTodo: function (id) {
