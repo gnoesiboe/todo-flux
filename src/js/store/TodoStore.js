@@ -7,6 +7,9 @@ var _ = require('underscore'),
     store = require('store'),
     todoFactory = require('./../factory/todoFactory');
 
+/**
+ * @constructor
+ */
 var TodoStore = function () {
 
     /**
@@ -21,7 +24,7 @@ var TodoStore = function () {
      * @type {string}
      * @private
      */
-    this._storageNamespace = 'todos';
+    this._collection = 'todos';
 
     TodoStore.prototype._init.apply(this, arguments);
 };
@@ -39,28 +42,35 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
      * @private
      */
     _initEventListeners: function () {
-        AppDispatcher.register(function (action) {
-            switch (action.type) {
-                case ActionConstants.TODO_CREATE:
-                    this._handleTodoCreate(action);
-                    break;
+        AppDispatcher.register(this._onActionReceived.bind(this));
+    },
 
-                case ActionConstants.TODO_COMPLETED:
-                    this._handleTodoCompleted(action);
-                    break;
+    /**
+     * @param {Object} action
+     *
+     * @private
+     */
+    _onActionReceived: function (action) {
+        switch (action.type) {
+            case ActionConstants.TODO_CREATE:
+                this._handleTodoCreate(action);
+                break;
 
-                case ActionConstants.TODO_UNCOMPLETED:
-                    this._handleTodoUncompleted(action);
-                    break;
+            case ActionConstants.TODO_COMPLETED:
+                this._handleTodoCompleted(action);
+                break;
 
-                case ActionConstants.TODO_DELETE:
-                    this._handleTodoDelete(action);
-                    break;
+            case ActionConstants.TODO_UNCOMPLETED:
+                this._handleTodoUncompleted(action);
+                break;
 
-                default:
-                    console.log('TodoStore did not handle:', action);
-            }
-        }.bind(this));
+            case ActionConstants.TODO_DELETE:
+                this._handleTodoDelete(action);
+                break;
+
+            default:
+                console.log('TodoStore did not handle:', action);
+        }
     },
 
     /**
@@ -140,7 +150,7 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
      * @private
      */
     _persistCollection: function () {
-        store.set(this._storageNamespace, this._todos.data);
+        store.set(this._collection, this._todos.data);
     },
 
     /**
@@ -149,6 +159,12 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
      * @private
      */
     _handleTodoCreate: function (action) {
+        if (action.collection !== this._collection) {
+            console.log('action not for ', this);
+
+            return;
+        }
+
         this._todos.add(todoFactory.createTodo(
             action.title,
             action.collection,
@@ -167,7 +183,7 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
      */
     _importTodosFromStore: function () {
         return new TodoCollection(
-            store.get(this._storageNamespace, [])
+            store.get(this._collection, [])
         )
     },
 
@@ -212,4 +228,4 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
     }
 });
 
-module.exports = new TodoStore();
+module.exports = TodoStore;

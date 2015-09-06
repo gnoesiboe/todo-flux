@@ -1,44 +1,11 @@
 var React = require('react'),
-    TodoListComponent = require('./TodoListComponent'),
-    TodoStore = require('./../store/TodoStore'),
     moment = require('moment'),
-    AddTodoComponent = require('./AddTodoComponent');
-
-var _getState = function () {
-    var allTodos = TodoStore.getAll();
-
-    var today = moment();
-
-    return {
-        todosToday: allTodos.filter(function (todo) {
-            return todo.collection === 'today';
-        }),
-        todosTomorrow: allTodos.filter(function (todo) {
-            return todo.collection === 'tomorrow';
-        }),
-        todosLater: allTodos.filter(function (todo) {
-            return todo.collection === 'later';
-        })
-    };
-};
+    AddTodoComponent = require('./AddTodoComponent'),
+    TodayComponent = require('./TodayComponent'),
+    TomorrowComponent = require('./TomorrowComponent'),
+    LaterComponent = require('./LaterComponent');
 
 var TodoAppComponent = React.createClass({
-
-    getInitialState: function () {
-        return _getState();
-    },
-
-    componentDidMount: function () {
-        TodoStore.addChangeListener(this._onChange);
-    },
-
-    componentWillUnmount: function () {
-        TodoStore.removeChangeListener(this._onChange);
-    },
-
-    _onChange: function () {
-        this.setState(_getState());
-    },
 
     /**
      * Renders this component into it's container element
@@ -59,13 +26,13 @@ var TodoAppComponent = React.createClass({
                 <hr />
                 <div className="row">
                     <div className="col-md-4">
-                        <TodoListComponent title="Today" todos={this.state.todosToday} collection="today" />
+                        <TodayComponent />
                     </div>
                     <div className="col-md-4">
-                        <TodoListComponent title="Tomorrow" todos={this.state.todosTomorrow} collection="tomorrow" />
+                        <TomorrowComponent />
                     </div>
                     <div className="col-md-4">
-                        <TodoListComponent title="Later" todos={this.state.todosLater} collection="later" />
+                        <LaterComponent />
                     </div>
                 </div>
             </div>
