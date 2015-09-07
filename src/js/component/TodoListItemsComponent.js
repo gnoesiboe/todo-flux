@@ -23,9 +23,9 @@ var TodoListItemsComponent = React.createClass({
     render: function () {
         var todoComponents = [];
 
-        for (var key in this.props.todos.data) {
-            if (this.props.todos.data.hasOwnProperty(key)) {
-                var todo = this.props.todos.data[key];
+        for (var key in this.props.todos) {
+            if (this.props.todos.hasOwnProperty(key)) {
+                var todo = this.props.todos[key];
 
                 todoComponents.push(
                     <TodoComponent todo={todo} key={todo.id} ref="todo" />
