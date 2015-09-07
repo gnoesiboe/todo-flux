@@ -57,6 +57,22 @@ var ActionFactory = {
             type: type,
             id: todo.id
         });
+    },
+
+    /**
+     * @param {String} id
+     * @param {Number} newIndex
+     * @param {String} newCollection
+     *
+     * @returns {Object}
+     */
+    buildChangePositionAction: function (id, newIndex, newCollection) {
+        return _.extend({}, _blueprint, {
+            type: ActionConstants.TODO_CHANGE_POSITION,
+            id: id,
+            newIndex: newIndex,
+            newCollection: newCollection
+        });
     }
 };
 
