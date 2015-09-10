@@ -1,0 +1,5 @@
+.todo-list {
+
+    /* min height to make sure there is always a todo list to drop items on with drag-n-drop */
+    min-height: 20px;
+}

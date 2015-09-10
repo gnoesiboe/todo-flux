@@ -52,11 +52,16 @@ _.extend(TodoCollection.prototype, {
 
     /**
      * @param {Object} todo
+     * @param {Number=} index
      *
      * @returns {TodoCollection}
      */
-    add: function (todo) {
-        this.data.push(todo);
+    add: function (todo, index) {
+        if (typeof index === 'undefined') {
+            this.data.push(todo);
+        } else {
+            this.data.splice(index, 0, todo);
+        }
 
         return this;
     },

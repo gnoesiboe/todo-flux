@@ -1,8 +1,10 @@
-var React = require('react'),
+var _ = require('underscore'),
+    React = require('react'),
     TodoComponent = require('./TodoComponent'),
     SortableMixin = require('sortablejs/react-sortable-mixin'),
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
-    ActionFactory = require('./../action/ActionFactory');
+    ActionFactory = require('./../action/ActionFactory'),
+    TodoStore = require('./../store/TodoStore');
 
 var TodoListItemsComponent = React.createClass({
 
@@ -18,18 +20,26 @@ var TodoListItemsComponent = React.createClass({
     },
 
     /**
-     * Gets called when
+     * Gets called when this component is the receiving
      *
      * @param {Object} event
      */
     handleSort: function (event) {
-        var newCollection = event.to.attributes['data-collection'].value,
+        var oldCollection = event.from.attributes['data-collection'].value,
+            newCollection = event.to.attributes['data-collection'].value,
             id = event.item.attributes['data-id'].value,
+            oldIndex = event.oldIndex,
             newIndex = event.newIndex;
 
-        AppDispatcher.dispatch(
-            ActionFactory.buildChangePositionAction(id, newIndex, newCollection)
-        );
+        // clone the original todo to ensure no strange behaviour occurs when this todo is passed around
+        // the application
+        var todo = _.extend({}, TodoStore.get(oldCollection).getAll().data[oldIndex]);
+
+        var action = oldCollection === newCollection
+            ? ActionFactory.buildChangePositionAction(id, newIndex, newCollection)
+            : ActionFactory.buildChangeCollectionAction(todo, oldCollection, newCollection, newIndex);
+
+        AppDispatcher.dispatch(action);
     },
 
     /**
@@ -42,16 +52,17 @@ var TodoListItemsComponent = React.createClass({
 
         for (var key in this.props.todos) {
             if (this.props.todos.hasOwnProperty(key)) {
-                var todo = this.props.todos[key];
+                var todo = this.props.todos[key],
+                    itemKey = todo.id;
 
                 todoComponents.push(
-                    <TodoComponent todo={todo} key={todo.id} ref="todo" />
+                    <TodoComponent todo={todo} key={itemKey} ref="todo" />
                 );
             }
         }
 
         return (
-            <ul className="list-group" data-collection={this.props.collection}>{todoComponents}</ul>
+            <ul className="list-group todo-list" data-collection={this.props.collection}>{todoComponents}</ul>
         )
     }
 });

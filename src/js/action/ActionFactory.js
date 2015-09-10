@@ -19,15 +19,19 @@ var ActionFactory = {
      * @param {String} title
      * @param {String} collection
      * @param {String} date
+     * @param {Number=} index
      *
      * @returns {Object}
      */
-    buildCreateAction: function (title, collection, date) {
+    buildCreateAction: function (title, collection, date, index) {
+        index = typeof index === 'undefined' ? null : index;
+
         return _.extend({}, _blueprint, {
             type: ActionConstants.TODO_CREATE,
             title: title,
             collection: collection,
-            date: date
+            date: date,
+            index: index
         });
     },
 
@@ -72,6 +76,24 @@ var ActionFactory = {
             id: id,
             newIndex: newIndex,
             newCollection: newCollection
+        });
+    },
+
+    /**
+     * @param {Object} todo
+     * @param {String} oldCollection
+     * @param {String} newCollection
+     * @param {Number} newIndex
+     *
+     * @returns {Object}
+     */
+    buildChangeCollectionAction: function (todo, oldCollection, newCollection, newIndex) {
+        return _.extend({}, _blueprint, {
+            type: ActionConstants.TODO_CHANGE_COLLECTION,
+            todo: todo,
+            oldCollection: oldCollection,
+            newCollection: newCollection,
+            newIndex: newIndex
         });
     }
 };
