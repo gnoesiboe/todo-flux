@@ -23,21 +23,47 @@ var TodoComponent = React.createClass({
         }
     },
 
+    _formatDate: function (date) {
+        var className = "text-muted";
+
+        date = moment(date);
+
+        var today = moment(),
+            tomorrow = today.clone().add(1, 'days');
+
+        // define value
+        var value = null;
+        if (date.isSame(today, 'day')) {
+            value = 'today';
+        } else if (date.isSame(tomorrow, 'day')) {
+            value = 'tomorrow';
+        } else {
+            value = date.format('DD/MM');
+        }
+
+        var startOfDay = moment().startOf('day');
+
+        // define color
+        if (date.isBefore(startOfDay)) {
+            className = 'alert-danger';
+        }
+
+        return <span className={className}>{value}</span>;
+    },
+
     /**
      * Renders this component into it's parent element
      *
      * @returns {XML}
      */
     render: function () {
-        var dataFormatted = moment(this.props.todo.date).format('MM/DD');
-
         return (
             <li className="list-group-item" ref="todo" data-id={this.props.todo.id}>
                 <div className="js-todo checkbox">
                     <a href="#" className="pull-right" onClick={this.onDeleteClick}>x</a>
                     <label>
                         <input type="checkbox" refs="checkbox" checked={this.props.todo.isCompleted} onChange={this.handleOnCheckboxChange} />
-                        <span className="text-muted">[{dataFormatted}]</span>&nbsp;-&nbsp;<strong>{this.props.todo.title}</strong>
+                        {this._formatDate(this.props.todo.date)}&nbsp;-&nbsp;<strong>{this.props.todo.title}</strong>
                     </label>
                 </div>
             </li>
