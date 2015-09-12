@@ -6,6 +6,9 @@ var React = require('react'),
 
 var AddTodoComponent = React.createClass({
 
+    /**
+     * Gets called just after this component was mounted
+     */
     componentDidMount: function () {
         this.focusTitleInput();
 
@@ -14,6 +17,9 @@ var AddTodoComponent = React.createClass({
         }.bind(this))
     },
 
+    /**
+     * Puts focus on the title input of the add todo form
+     */
     focusTitleInput: function () {
         if (this.refs.title) {
             React.findDOMNode(this.refs.title).focus();
