@@ -34,7 +34,9 @@ var TodoComponent = React.createClass({
     /**
      * Gets called when the user tries to delete a
      */
-    onDeleteClick: function () {
+    onDeleteClick: function (event) {
+        event.preventDefault();
+
         var isConfirmed = confirm('Are you sure?');
 
         if (isConfirmed) {

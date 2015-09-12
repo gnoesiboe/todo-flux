@@ -35,6 +35,7 @@ var LaterComponent = React.createClass({
         return (
             <TodoListComponent title="Later"
                                todos={this.state.todos}
+                               current={this.props.current}
                                collection="later" />
         );
     }

@@ -35,6 +35,7 @@ var TodayComponent = React.createClass({
         return (
             <TodoListComponent title="Today"
                                todos={this.state.todos}
+                               current={this.props.current}
                                collection="today" />
         );
     }

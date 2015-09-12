@@ -10,11 +10,13 @@ var AddTodoComponent = React.createClass({
      * Gets called just after this component was mounted
      */
     componentDidMount: function () {
-        this.focusTitleInput();
-
         mousetrap.bind(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'], function () {
             this.focusTitleInput();
-        }.bind(this))
+        }.bind(this));
+
+        mousetrap.bind('escape', function () {
+            this.blurInputs();
+        }.bind(this));
     },
 
     /**
@@ -23,6 +25,22 @@ var AddTodoComponent = React.createClass({
     focusTitleInput: function () {
         if (this.refs.title) {
             React.findDOMNode(this.refs.title).focus();
+        }
+    },
+
+    blurInputs: function () {
+        console.log('blur inputs');
+
+        if (this.refs.title) {
+            React.findDOMNode(this.refs.title).blur();
+        }
+
+        if (this.refs.collection) {
+            React.findDOMNode(this.refs.collection).blur();
+        }
+
+        if (this.refs.date) {
+            React.findDOMNode(this.refs.date).blur();
         }
     },
 
@@ -84,7 +102,7 @@ var AddTodoComponent = React.createClass({
                            name="title"
                            placeholder="Title"
                            value={this.state.title}
-                           onChange={this.onFieldChange} />&nbsp;
+                           onChange={this.onFieldChange}/>&nbsp;
                 </div>
                 <div className="form-group">
                     <select className="form-control"
