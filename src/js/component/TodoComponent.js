@@ -85,11 +85,9 @@ var TodoComponent = React.createClass({
 
         this.setState({
             modus: modusConstants.EDIT
+        }, function () {
+            this.focusTitleInput();
         });
-    },
-
-    componentDidUpdate: function () {
-        this.focusTitleInput();
     },
 
     focusTitleInput: function () {
