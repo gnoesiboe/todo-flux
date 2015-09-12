@@ -143,9 +143,12 @@ var TodoComponent = React.createClass({
                 inner = this.renderModusEdit();
                 break;
 
-            default:
+            case modusConstants.VIEW:
                 inner = this.renderModusView();
                 break;
+
+            default:
+                throw new Error('Modus \'' + this.state.modus + '\' not supported');
         }
 
         return (
