@@ -86,6 +86,11 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
                 this._handleChangeCollection(action);
                 break;
 
+            case ActionConstants.TODO_EDIT:
+                this._handleTodoEdit(action);
+                break;
+
+
             default:
                 // do nothing as this action does not concern this store
                 break;
@@ -249,6 +254,20 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
         ));
 
         this._persistCollection();
+
+        this._emitChange();
+    },
+
+    /**
+     * @param {Object} action
+     *
+     * @private
+     */
+    _handleTodoEdit: function (action) {
+        this._updateTodo(action.id, {
+            title: action.title,
+            date: action.date
+        });
 
         this._emitChange();
     },
