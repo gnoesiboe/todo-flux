@@ -88,6 +88,16 @@ var TodoComponent = React.createClass({
         });
     },
 
+    componentDidUpdate: function () {
+        this.focusTitleInput();
+    },
+
+    focusTitleInput: function () {
+        if (this.refs.title) {
+            React.findDOMNode(this.refs.title).focus();
+        }
+    },
+
     /**
      * @param {Object} event
      */
