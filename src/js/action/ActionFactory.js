@@ -36,6 +36,22 @@ var ActionFactory = {
     },
 
     /**
+     * @param {String} id
+     * @param {String} title
+     * @param {String} date
+     *
+     * @returns {Object}
+     */
+    buildEditAction: function (id, title, date) {
+        return _.extend({}, _blueprint, {
+            type: ActionConstants.TODO_EDIT,
+            id: id,
+            title: title,
+            date: date
+        });
+    },
+
+    /**
      * @param {Object} todo
      *
      * @returns {Object}

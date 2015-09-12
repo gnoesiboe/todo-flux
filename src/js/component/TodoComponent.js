@@ -10,6 +10,13 @@ var TodoComponent = React.createClass({
      * @returns {Object}
      */
     getInitialState: function () {
+        return this.getDefaultState();
+    },
+
+    /**
+     * @returns {Object}
+     */
+    getDefaultState: function () {
         return {
             title: this.props.todo.title,
             date: this.props.todo.date,
@@ -82,6 +89,42 @@ var TodoComponent = React.createClass({
     },
 
     /**
+     * @param {Object} event
+     */
+    onFormSubmit: function (event) {
+        event.preventDefault();
+
+        if (this.refs.title.getDOMNode().value.length === 0) {
+            return;
+        }
+
+        AppDispatcher.dispatch(ActionFactory.buildEditAction(
+            this.props.todo.id,
+            this.state.title,
+            this.state.date
+        ));
+
+        this.reset();
+    },
+
+    /**
+     * Resets the state of this component
+     */
+    reset: function () {
+        this.setState(this.getDefaultState());
+    },
+
+    /**
+     * @param {Object} event
+     */
+    onFieldChange: function (event) {
+        var state = {};
+        state[event.target.name] = event.target.value;
+
+        this.setState(state);
+    },
+
+    /**
      * @returns {XML}
      */
     renderModusEdit: function () {
@@ -94,6 +137,7 @@ var TodoComponent = React.createClass({
                                ref="title"
                                name="title"
                                value={this.state.title}
+                               onChange={this.onFieldChange}
                                placeholder="title"/>&nbsp;
                     </div>
                     <div className="form-group">
@@ -101,6 +145,7 @@ var TodoComponent = React.createClass({
                                className="form-control"
                                ref="date"
                                value={this.state.date}
+                               onChange={this.onFieldChange}
                                name="date"/>&nbsp;
                     </div>
                     <button type="submit" className="btn btn-success">Save</button>
@@ -116,8 +161,8 @@ var TodoComponent = React.createClass({
         return (
             <div className="checkbox">
                 <ul className="list-inline pull-right">
-                    <li><a href="#" onClick={this.onEditClick}>e</a></li>
-                    <li><a href="#" onClick={this.onDeleteClick}>x</a></li>
+                    <li><a href="#" onClick={this.onEditClick}><i className="glyphicon glyphicon-edit"></i></a></li>
+                    <li><a href="#" onClick={this.onDeleteClick}><i className="glyphicon glyphicon-remove"></i></a></li>
                 </ul>
 
                 <label>
