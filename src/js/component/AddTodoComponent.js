@@ -1,30 +1,54 @@
 var React = require('react'),
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
     ActionFactory = require('./../action/ActionFactory'),
-    moment = require('moment');
+    moment = require('moment'),
+    mousetrap = require('mousetrap');
 
 var AddTodoComponent = React.createClass({
+
+    componentDidMount: function () {
+        this.focusTitleInput();
+
+        mousetrap.bind(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'], function () {
+            this.focusTitleInput();
+        }.bind(this))
+    },
+
+    focusTitleInput: function () {
+        if (this.refs.title) {
+            React.findDOMNode(this.refs.title).focus();
+        }
+    },
+
+    /**
+     * Gets called when the form is submitted and handles todo
+     * creation and prevents actual backend form submission
+     *
+     * @todo proper validation of input
+     *
+     * @param {Object} event
+     */
     onFormSubmit: function (event) {
         event.preventDefault();
 
-        if (this.refs.title.getDOMNode().value.length === 0) {
+        if (this.state.title.length === 0) {
             return;
         }
 
         AppDispatcher.dispatch(ActionFactory.buildCreateAction(
-            this.refs.title.getDOMNode().value,
-            this.refs.collection.getDOMNode().value,
-            this.refs.date.getDOMNode().value
+            this.state.title,
+            this.state.collection,
+            this.state.date
         ));
 
-        this.clearForm();
+        this.reset();
     },
 
     getInitialState: function () {
         return this.getDefaultState();
     },
 
-    clearForm: function () {
+    reset: function () {
         this.setState(this.getDefaultState());
     },
 
