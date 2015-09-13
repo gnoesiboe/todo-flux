@@ -4,7 +4,8 @@ var _ = require('underscore'),
     SortableMixin = require('sortablejs/react-sortable-mixin'),
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
     ActionFactory = require('./../action/ActionFactory'),
-    TodoStore = require('./../store/TodoStore');
+    TodoStore = require('./../store/TodoStore'),
+    mousetrap = require('mousetrap');
 
 var TodoListItemsComponent = React.createClass({
 
@@ -50,13 +51,14 @@ var TodoListItemsComponent = React.createClass({
     render: function () {
         var todoComponents = [];
 
-        for (var key in this.props.todos) {
-            if (this.props.todos.hasOwnProperty(key)) {
-                var todo = this.props.todos[key],
-                    itemKey = todo.id;
+        for (var index in this.props.todos) {
+            if (this.props.todos.hasOwnProperty(index)) {
+                var todo = this.props.todos[index],
+                    key = todo.id,
+                    isCurrentTodo= this.props.current && this.props.currentTodoIndex == index;
 
                 todoComponents.push(
-                    <TodoComponent todo={todo} key={itemKey} ref="todo" />
+                    <TodoComponent todo={todo} key={key} ref="todo" current={isCurrentTodo} />
                 );
             }
         }

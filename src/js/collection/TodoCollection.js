@@ -103,6 +103,13 @@ _.extend(TodoCollection.prototype, {
     },
 
     /**
+     * @returns {Number}
+     */
+    count: function () {
+        return this.data.length;
+    },
+
+    /**
      * @param {String} id
      *
      * @returns {Number|null}

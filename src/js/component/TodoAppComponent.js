@@ -4,7 +4,8 @@ var React = require('react'),
     TodayComponent = require('./TodayComponent'),
     TomorrowComponent = require('./TomorrowComponent'),
     LaterComponent = require('./LaterComponent'),
-    mousetrap = require('mousetrap');
+    mousetrap = require('mousetrap'),
+    todoStore = require('./../store/TodoStore');
 
 var _selections = [
     'today',
@@ -15,19 +16,53 @@ var _selections = [
 var TodoAppComponent = React.createClass({
 
     componentDidMount: function () {
-        mousetrap.bind('right', this.applyNextSelection.bind(this));
-        mousetrap.bind('left', this.applyPreviousSelection.bind(this));
+        mousetrap.bind('right', this.applyNextCollectionSelected);
+        mousetrap.bind('left', this.applyPreviousCollectionSelected);
+        mousetrap.bind('up', this.applyPreviousTodoSelected);
+        mousetrap.bind('down', this.applyNextTodoSelected);
     },
 
-    applyPreviousSelection: function () {
+    applyPreviousTodoSelected: function (event) {
+        event.preventDefault();
+
+        var currentCollectionCount = todoStore.get(_selections[this.state.currentSelectionIndex]).count();
+
         this.setState({
-            currentIndex: (this.state.currentIndex - 1) < 0 ? _selections.length - 1  : this.state.currentIndex - 1
+            currentTodoIndex: (this.state.currentTodoIndex - 1) < 0 ? currentCollectionCount -1 : this.state.currentTodoIndex - 1
+        });
+
+        console.log('previous todo selected', this.state.currentTodoIndex);
+    },
+
+    applyNextTodoSelected: function (event) {
+        event.preventDefault();
+
+        var currentCollectionCount = todoStore.get(_selections[this.state.currentSelectionIndex]).count();
+
+        this.setState({
+            currentTodoIndex: (this.state.currentTodoIndex + 1) > (currentCollectionCount - 1) ? 0 : this.state.currentTodoIndex + 1
         });
     },
 
-    applyNextSelection: function () {
+    applyPreviousCollectionSelected: function () {
+        var newCollectionIndex = (this.state.currentSelectionIndex - 1) < 0 ? _selections.length - 1 : this.state.currentSelectionIndex - 1,
+            newCollection = _selections[newCollectionIndex],
+            targetCollectionCount = todoStore.get(newCollection).count();
+
         this.setState({
-            currentIndex: (this.state.currentIndex + 1) > (_selections.length - 1) ? 0 : this.state.currentIndex + 1
+            currentSelectionIndex: newCollectionIndex,
+            currentTodoIndex: targetCollectionCount - 1 < this.state.currentTodoIndex ? targetCollectionCount - 1 : this.state.currentTodoIndex
+        });
+    },
+
+    applyNextCollectionSelected: function () {
+        var newCollectionIndex = (this.state.currentSelectionIndex + 1) > (_selections.length - 1) ? 0 : this.state.currentSelectionIndex + 1,
+            newCollection = _selections[newCollectionIndex],
+            targetCollectionCount = todoStore.get(newCollection).count();
+
+        this.setState({
+            currentSelectionIndex: newCollectionIndex,
+            currentTodoIndex: targetCollectionCount - 1 < this.state.currentTodoIndex ? targetCollectionCount - 1 : this.state.currentTodoIndex
         });
     },
 
@@ -36,7 +71,8 @@ var TodoAppComponent = React.createClass({
      */
     getInitialState: function () {
         return {
-            currentIndex: 0
+            currentSelectionIndex: 0,
+            currentTodoIndex: 0
         }
     },
 
@@ -47,7 +83,7 @@ var TodoAppComponent = React.createClass({
      */
     render: function () {
         var today = moment().format('YYYY-MM-DD'),
-            selection = _selections[this.state.currentIndex];
+            selection = _selections[this.state.currentSelectionIndex];
 
         return (
             <div className="container">
@@ -60,13 +96,13 @@ var TodoAppComponent = React.createClass({
                 <hr />
                 <div className="row">
                     <div className="col-md-4">
-                        <TodayComponent current={selection === 'today'} />
+                        <TodayComponent current={selection === 'today'} currentTodoIndex={this.state.currentTodoIndex} />
                     </div>
                     <div className="col-md-4">
-                        <TomorrowComponent current={selection === 'tomorrow'} />
+                        <TomorrowComponent current={selection === 'tomorrow'} currentTodoIndex={this.state.currentTodoIndex} />
                     </div>
                     <div className="col-md-4">
-                        <LaterComponent current={selection === 'later'} />
+                        <LaterComponent current={selection === 'later'} currentTodoIndex={this.state.currentTodoIndex} />
                     </div>
                 </div>
             </div>

@@ -206,8 +206,10 @@ var TodoComponent = React.createClass({
                 throw new Error('Modus \'' + this.state.modus + '\' not supported');
         }
 
+        var className = 'list-group-item todo' + (this.props.current ? ' current' : '');
+
         return (
-            <li className="list-group-item" ref="todo" data-id={this.props.todo.id}>
+            <li className={className} ref="todo" data-id={this.props.todo.id}>
                 <div className="js-todo">
                     {inner}
                 </div>

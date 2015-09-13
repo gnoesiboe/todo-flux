@@ -302,6 +302,13 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
     },
 
     /**
+     * @returns {Number}
+     */
+    count: function () {
+        return this.getAll().count()
+    },
+
+    /**
      * @param {Function} callback
      *
      * @returns {TodoStore}

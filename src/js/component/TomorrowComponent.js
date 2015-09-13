@@ -36,6 +36,7 @@ var TomorrowComponent = React.createClass({
             <TodoListComponent title="Tomorrow"
                                todos={this.state.todos}
                                current={this.props.current}
+                               currentTodoIndex={this.props.currentTodoIndex}
                                collection="tomorrow" />
         );
     }

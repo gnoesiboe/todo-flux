@@ -12,7 +12,10 @@ var TodoListComponent = React.createClass({
         return (
             <div className={className}>
                 <h1>{this.props.title}</h1>
-                <TodoListItemsComponent todos={this.props.todos.data} collection={this.props.collection} />
+                <TodoListItemsComponent todos={this.props.todos.data}
+                                        collection={this.props.collection}
+                                        current={this.props.current}
+                                        currentTodoIndex={this.props.currentTodoIndex} />
             </div>
         );
     }
