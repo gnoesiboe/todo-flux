@@ -10,7 +10,7 @@ var AddTodoComponent = React.createClass({
      * Gets called just after this component was mounted
      */
     componentDidMount: function () {
-        mousetrap.bind(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'], function () {
+        mousetrap.bind(['c'], function () {
             this.focusTitleInput();
         }.bind(this));
 
@@ -64,6 +64,7 @@ var AddTodoComponent = React.createClass({
         ));
 
         this.reset();
+        this.blurInputs();
     },
 
     getInitialState: function () {
