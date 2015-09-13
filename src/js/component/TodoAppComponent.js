@@ -5,7 +5,9 @@ var React = require('react'),
     TomorrowComponent = require('./TomorrowComponent'),
     LaterComponent = require('./LaterComponent'),
     mousetrap = require('mousetrap'),
-    todoStore = require('./../store/TodoStore');
+    todoStore = require('./../store/TodoStore'),
+    AppDispatcher = require('./../dispatcher/AppDispatcher'),
+    ActionFactory = require('./../action/ActionFactory');
 
 var _selections = [
     'today',
@@ -20,6 +22,13 @@ var TodoAppComponent = React.createClass({
         mousetrap.bind('left', this.applyPreviousCollectionSelected);
         mousetrap.bind('up', this.applyPreviousTodoSelected);
         mousetrap.bind('down', this.applyNextTodoSelected);
+        mousetrap.bind('space', this.onSpaceKeyPressed);
+    },
+
+    onSpaceKeyPressed: function () {
+        var currentTodo = todoStore.get(_selections[this.state.currentSelectionIndex]).getAll().getAtIndex(this.state.currentTodoIndex);
+
+        AppDispatcher.dispatch(ActionFactory.buildChangeCompleteStatusAction(currentTodo));
     },
 
     applyPreviousTodoSelected: function (event) {
