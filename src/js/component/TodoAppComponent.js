@@ -35,7 +35,8 @@ var TodoAppComponent = React.createClass({
             text: '<strong>a</strong> / <strong>c</strong>: create new todo<br />' +
             '<strong>left</strong> / <strong>right</strong> / <strong>up</strong> / <strong>down</strong>: navigate through existing todos<br />' +
             '<strong>d</strong>: delete currently selected todo<br />' +
-            '<strong>e</strong>: edit the currently selected todo',
+            '<strong>e</strong>: edit the currently selected todo<br />' +
+            '<strong>space</strong>: toggle complete status of currently selected todo',
             html: true
         });
     },
