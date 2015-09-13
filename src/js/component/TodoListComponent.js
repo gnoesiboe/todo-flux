@@ -4,7 +4,7 @@ var React = require('react'),
 var TodoListComponent = React.createClass({
 
     render: function () {
-        var className = 'js-todo-list todo-list-component' + (this.props.current === true ? ' current' : '');
+        var className = 'js-todo-list todo-list-component' + (this.props.isCurrentCollection ? ' current' : '');
 
         // providing this.props.todos.data to make sure the sortable functionality work. It uses Array.slice, and this
         // cannot be used on our collection
@@ -14,7 +14,7 @@ var TodoListComponent = React.createClass({
                 <h1>{this.props.title}</h1>
                 <TodoListItemsComponent todos={this.props.todos.data}
                                         collection={this.props.collection}
-                                        current={this.props.current}
+                                        isCurrentCollection={this.props.isCurrentCollection}
                                         currentTodoIndex={this.props.currentTodoIndex} />
             </div>
         );

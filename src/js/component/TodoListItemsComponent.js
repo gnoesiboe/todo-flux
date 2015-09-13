@@ -55,7 +55,7 @@ var TodoListItemsComponent = React.createClass({
             if (this.props.todos.hasOwnProperty(index)) {
                 var todo = this.props.todos[index],
                     key = todo.id,
-                    isCurrentTodo= this.props.current && this.props.currentTodoIndex == index;
+                    isCurrentTodo= this.props.isCurrentCollection && this.props.currentTodoIndex == index;
 
                 todoComponents.push(
                     <TodoComponent todo={todo} key={key} ref="todo" current={isCurrentTodo} />

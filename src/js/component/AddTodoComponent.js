@@ -29,8 +29,6 @@ var AddTodoComponent = React.createClass({
     },
 
     blurInputs: function () {
-        console.log('blur inputs');
-
         if (this.refs.title) {
             React.findDOMNode(this.refs.title).blur();
         }

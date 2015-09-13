@@ -30,8 +30,6 @@ var TodoAppComponent = React.createClass({
         this.setState({
             currentTodoIndex: (this.state.currentTodoIndex - 1) < 0 ? currentCollectionCount -1 : this.state.currentTodoIndex - 1
         });
-
-        console.log('previous todo selected', this.state.currentTodoIndex);
     },
 
     applyNextTodoSelected: function (event) {
@@ -96,13 +94,13 @@ var TodoAppComponent = React.createClass({
                 <hr />
                 <div className="row">
                     <div className="col-md-4">
-                        <TodayComponent current={selection === 'today'} currentTodoIndex={this.state.currentTodoIndex} />
+                        <TodayComponent isCurrentCollection={selection === 'today'} currentTodoIndex={this.state.currentTodoIndex} />
                     </div>
                     <div className="col-md-4">
-                        <TomorrowComponent current={selection === 'tomorrow'} currentTodoIndex={this.state.currentTodoIndex} />
+                        <TomorrowComponent isCurrentCollection={selection === 'tomorrow'} currentTodoIndex={this.state.currentTodoIndex} />
                     </div>
                     <div className="col-md-4">
-                        <LaterComponent current={selection === 'later'} currentTodoIndex={this.state.currentTodoIndex} />
+                        <LaterComponent isCurrentCollection={selection === 'later'} currentTodoIndex={this.state.currentTodoIndex} />
                     </div>
                 </div>
             </div>
