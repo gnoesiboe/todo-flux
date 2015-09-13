@@ -25,7 +25,12 @@ var TodoAppComponent = React.createClass({
         mousetrap.bind('space', this.onSpaceKeyPressed);
     },
 
-    onSpaceKeyPressed: function () {
+    /**
+     * @param {Object} event
+     */
+    onSpaceKeyPressed: function (event) {
+        event.preventDefault();
+
         var currentTodo = todoStore.get(_selections[this.state.currentSelectionIndex]).getAll().getAtIndex(this.state.currentTodoIndex);
 
         AppDispatcher.dispatch(ActionFactory.buildChangeCompleteStatusAction(currentTodo));
