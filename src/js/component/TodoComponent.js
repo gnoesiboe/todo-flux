@@ -2,7 +2,9 @@ var React = require('react'),
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
     ActionFactory = require('./../action/ActionFactory'),
     moment = require('moment'),
-    modusConstants = require('./../constants/ModusConstants');
+    modusConstants = require('./../constants/ModusConstants'),
+    AppDispatcher = require('./../dispatcher/AppDispatcher'),
+    ActionConstants = require('./../constants/ActionConstants');
 
 var TodoComponent = React.createClass({
 
@@ -11,6 +13,26 @@ var TodoComponent = React.createClass({
      */
     getInitialState: function () {
         return this.getDefaultState();
+    },
+
+    componentDidMount: function () {
+        AppDispatcher.register(function (action) {
+            switch (action.type) {
+                case ActionConstants.TODO_ENTER_EDIT_MODE:
+                    this.enterEditModeIfIsCurrentTodo();
+                    break;
+            }
+        }.bind(this));
+    },
+
+    enterEditModeIfIsCurrentTodo: function () {
+        if (this.props.current) {
+            this.setState({
+                modus: modusConstants.EDIT
+            }, function () {
+                this.focusTitleInput();
+            });
+        }
     },
 
     /**

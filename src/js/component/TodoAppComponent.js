@@ -23,6 +23,16 @@ var TodoAppComponent = React.createClass({
         mousetrap.bind('up', this.applyPreviousTodoSelected);
         mousetrap.bind('down', this.applyNextTodoSelected);
         mousetrap.bind('space', this.onSpaceKeyPressed);
+        mousetrap.bind('e', this.onEditKeyPressed);
+    },
+
+    /**
+     * @param {Object} event
+     */
+    onEditKeyPressed: function (event) {
+        event.preventDefault();
+
+        AppDispatcher.dispatch(ActionFactory.buildEnterTodoEditModeAction());
     },
 
     /**

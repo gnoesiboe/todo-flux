@@ -80,6 +80,15 @@ var ActionFactory = {
     },
 
     /**
+     * @returns {Object}
+     */
+    buildEnterTodoEditModeAction: function () {
+        return _.extend({}, _blueprint, {
+            type: ActionConstants.TODO_ENTER_EDIT_MODE
+        });
+    },
+
+    /**
      * @param {String} id
      * @param {Number} newIndex
      * @param {String} newCollection
