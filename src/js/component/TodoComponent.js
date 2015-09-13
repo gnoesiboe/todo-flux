@@ -3,8 +3,8 @@ var React = require('react'),
     ActionFactory = require('./../action/ActionFactory'),
     moment = require('moment'),
     modusConstants = require('./../constants/ModusConstants'),
-    AppDispatcher = require('./../dispatcher/AppDispatcher'),
-    ActionConstants = require('./../constants/ActionConstants');
+    ActionConstants = require('./../constants/ActionConstants'),
+    sweetalert = require('sweetalert');
 
 var TodoComponent = React.createClass({
 
@@ -21,18 +21,36 @@ var TodoComponent = React.createClass({
                 case ActionConstants.TODO_ENTER_EDIT_MODE:
                     this.enterEditModeIfIsCurrentTodo();
                     break;
+
+                case ActionConstants.TODO_DELETE_CURRENTLY_SELECTED:
+                    this.initiateDeleteIfCurrentTodo();
+                    break;
+
+                default:
+                    // do nothing, action not relevant for this component
+                    break;
             }
         }.bind(this));
     },
 
     enterEditModeIfIsCurrentTodo: function () {
-        if (this.props.current) {
-            this.setState({
-                modus: modusConstants.EDIT
-            }, function () {
-                this.focusTitleInput();
-            });
+        if (!this.props.current) {
+            return;
         }
+
+        this.setState({
+            modus: modusConstants.EDIT
+        }, function () {
+            this.focusTitleInput();
+        });
+    },
+
+    initiateDeleteIfCurrentTodo: function () {
+        if (!this.props.current) {
+            return;
+        }
+
+        this.initiateDelete();
     },
 
     /**
@@ -59,11 +77,22 @@ var TodoComponent = React.createClass({
     onDeleteClick: function (event) {
         event.preventDefault();
 
-        var isConfirmed = confirm('Are you sure?');
+        this.initiateDelete();
+    },
 
-        if (isConfirmed) {
-            AppDispatcher.dispatch(ActionFactory.buildDeleteAction(this.props.todo));
-        }
+    initiateDelete: function () {
+        sweetalert({
+            title: 'Are you sure?',
+            text: 'Are you sure you want to delete this todo? You will not be able to recover it.',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Yes, delete it!'
+        }, this.onTodoDeleteConfirmed);
+    },
+
+    onTodoDeleteConfirmed: function () {
+        AppDispatcher.dispatch(ActionFactory.buildDeleteAction(this.props.todo));
     },
 
     /**

@@ -24,6 +24,16 @@ var TodoAppComponent = React.createClass({
         mousetrap.bind('down', this.applyNextTodoSelected);
         mousetrap.bind('space', this.onSpaceKeyPressed);
         mousetrap.bind('e', this.onEditKeyPressed);
+        mousetrap.bind('d', this.onDeleteKeyPressed);
+    },
+
+    /**
+     * @param {Object} event
+     */
+    onDeleteKeyPressed: function (event) {
+        event.preventDefault();
+
+        AppDispatcher.dispatch(ActionFactory.buildDeleteCurrentTodoAction())
     },
 
     /**
