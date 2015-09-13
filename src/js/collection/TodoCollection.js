@@ -103,6 +103,22 @@ _.extend(TodoCollection.prototype, {
     },
 
     /**
+     * @returns {Number}
+     */
+    count: function () {
+        return this.data.length;
+    },
+
+    /**
+     * @param {Number} index
+     *
+     * @returns {Object|null}
+     */
+    getAtIndex: function (index) {
+        return typeof this.data[index] !== 'undefined' ? this.data[index] : null;
+    },
+
+    /**
      * @param {String} id
      *
      * @returns {Number|null}

@@ -3,6 +3,19 @@
     width: 100%;
 }
 
+.todo-list-component {
+    padding: 10px;
+}
+
+.todo-list-component.current {
+    background: #efefef;
+    border-radius: 6px;
+}
+
+.todo.current {
+    background: #faf4ce;
+}
+
 .todo-list {
 
     /* min height to make sure there is always a todo list to drop items on with drag-n-drop */

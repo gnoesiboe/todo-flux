@@ -1,30 +1,80 @@
 var React = require('react'),
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
     ActionFactory = require('./../action/ActionFactory'),
-    moment = require('moment');
+    moment = require('moment'),
+    mousetrap = require('mousetrap');
 
 var AddTodoComponent = React.createClass({
+
+    /**
+     * Gets called just after this component was mounted
+     */
+    componentDidMount: function () {
+        mousetrap.bind(['c', 'a'], this.onCreateTodoInitiated);
+    },
+
+    /**
+     * @param {Object} event
+     */
+    onCreateTodoInitiated: function (event) {
+        event.preventDefault();
+
+        this.focusTitleInput();
+    },
+
+    /**
+     * Puts focus on the title input of the add todo form
+     */
+    focusTitleInput: function () {
+        if (this.refs.title) {
+            React.findDOMNode(this.refs.title).focus();
+        }
+    },
+
+    blurInputs: function () {
+        if (this.refs.title) {
+            React.findDOMNode(this.refs.title).blur();
+        }
+
+        if (this.refs.collection) {
+            React.findDOMNode(this.refs.collection).blur();
+        }
+
+        if (this.refs.date) {
+            React.findDOMNode(this.refs.date).blur();
+        }
+    },
+
+    /**
+     * Gets called when the form is submitted and handles todo
+     * creation and prevents actual backend form submission
+     *
+     * @todo proper validation of input
+     *
+     * @param {Object} event
+     */
     onFormSubmit: function (event) {
         event.preventDefault();
 
-        if (this.refs.title.getDOMNode().value.length === 0) {
+        if (this.state.title.length === 0) {
             return;
         }
 
         AppDispatcher.dispatch(ActionFactory.buildCreateAction(
-            this.refs.title.getDOMNode().value,
-            this.refs.collection.getDOMNode().value,
-            this.refs.date.getDOMNode().value
+            this.state.title,
+            this.state.collection,
+            this.state.date
         ));
 
-        this.clearForm();
+        this.reset();
+        this.blurInputs();
     },
 
     getInitialState: function () {
         return this.getDefaultState();
     },
 
-    clearForm: function () {
+    reset: function () {
         this.setState(this.getDefaultState());
     },
 
@@ -54,7 +104,7 @@ var AddTodoComponent = React.createClass({
                            name="title"
                            placeholder="Title"
                            value={this.state.title}
-                           onChange={this.onFieldChange} />&nbsp;
+                           onChange={this.onFieldChange}/>&nbsp;
                 </div>
                 <div className="form-group">
                     <select className="form-control"

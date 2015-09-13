@@ -2,7 +2,9 @@ var React = require('react'),
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
     ActionFactory = require('./../action/ActionFactory'),
     moment = require('moment'),
-    modusConstants = require('./../constants/ModusConstants');
+    modusConstants = require('./../constants/ModusConstants'),
+    ActionConstants = require('./../constants/ActionConstants'),
+    sweetalert = require('sweetalert');
 
 var TodoComponent = React.createClass({
 
@@ -11,6 +13,44 @@ var TodoComponent = React.createClass({
      */
     getInitialState: function () {
         return this.getDefaultState();
+    },
+
+    componentDidMount: function () {
+        AppDispatcher.register(function (action) {
+            switch (action.type) {
+                case ActionConstants.TODO_ENTER_EDIT_MODE:
+                    this.enterEditModeIfIsCurrentTodo();
+                    break;
+
+                case ActionConstants.TODO_DELETE_CURRENTLY_SELECTED:
+                    this.initiateDeleteIfCurrentTodo();
+                    break;
+
+                default:
+                    // do nothing, action not relevant for this component
+                    break;
+            }
+        }.bind(this));
+    },
+
+    enterEditModeIfIsCurrentTodo: function () {
+        if (!this.props.current) {
+            return;
+        }
+
+        this.setState({
+            modus: modusConstants.EDIT
+        }, function () {
+            this.focusTitleInput();
+        });
+    },
+
+    initiateDeleteIfCurrentTodo: function () {
+        if (!this.props.current) {
+            return;
+        }
+
+        this.initiateDelete();
     },
 
     /**
@@ -34,12 +74,25 @@ var TodoComponent = React.createClass({
     /**
      * Gets called when the user tries to delete a
      */
-    onDeleteClick: function () {
-        var isConfirmed = confirm('Are you sure?');
+    onDeleteClick: function (event) {
+        event.preventDefault();
 
-        if (isConfirmed) {
-            AppDispatcher.dispatch(ActionFactory.buildDeleteAction(this.props.todo));
-        }
+        this.initiateDelete();
+    },
+
+    initiateDelete: function () {
+        sweetalert({
+            title: 'Are you sure?',
+            text: 'Are you sure you want to delete this todo? You will not be able to recover it.',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Yes, delete it!'
+        }, this.onTodoDeleteConfirmed);
+    },
+
+    onTodoDeleteConfirmed: function () {
+        AppDispatcher.dispatch(ActionFactory.buildDeleteAction(this.props.todo));
     },
 
     /**
@@ -204,8 +257,10 @@ var TodoComponent = React.createClass({
                 throw new Error('Modus \'' + this.state.modus + '\' not supported');
         }
 
+        var className = 'list-group-item todo' + (this.props.current ? ' current' : '');
+
         return (
-            <li className="list-group-item" ref="todo" data-id={this.props.todo.id}>
+            <li className={className} ref="todo" data-id={this.props.todo.id}>
                 <div className="js-todo">
                     {inner}
                 </div>
