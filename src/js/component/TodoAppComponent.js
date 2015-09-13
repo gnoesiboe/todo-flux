@@ -7,7 +7,8 @@ var React = require('react'),
     mousetrap = require('mousetrap'),
     todoStore = require('./../store/TodoStore'),
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
-    ActionFactory = require('./../action/ActionFactory');
+    ActionFactory = require('./../action/ActionFactory'),
+    sweetalert = require('sweetalert');
 
 var _selections = [
     'today',
@@ -25,6 +26,18 @@ var TodoAppComponent = React.createClass({
         mousetrap.bind('space', this.onSpaceKeyPressed);
         mousetrap.bind('e', this.onEditKeyPressed);
         mousetrap.bind('d', this.onDeleteKeyPressed);
+        mousetrap.bind('?', this.showPopupWithKeyboardShortcuts);
+    },
+
+    showPopupWithKeyboardShortcuts: function () {
+        sweetalert({
+            title: 'Keyboard shorcuts',
+            text: '<strong>a</strong> / <strong>c</strong>: create new todo<br />' +
+            '<strong>left</strong> / <strong>right</strong> / <strong>up</strong> / <strong>down</strong>: navigate through existing todos<br />' +
+            '<strong>d</strong>: delete currently selected todo<br />' +
+            '<strong>e</strong>: edit the currently selected todo',
+            html: true
+        });
     },
 
     /**
