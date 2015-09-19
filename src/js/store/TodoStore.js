@@ -17,6 +17,8 @@ var _stores = {};
 
 /**
  * @constructor
+ *
+ * @param {Array=} collection
  */
 var TodoStore = function (collection) {
 
@@ -40,10 +42,12 @@ var TodoStore = function (collection) {
 _.extend(TodoStore.prototype, EventEmitter.prototype, {
 
     /**
+     * @param {Array=} collection
+     *
      * @private
      */
     _init: function (collection) {
-        this._collection = collection;
+        this._collection = collection || [];
 
         this._initEventListeners();
     },
@@ -278,9 +282,19 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
      * @private
      */
     _importTodosFromStore: function () {
-        return new TodoCollection(
-            store.get(this._collection, [])
-        )
+        var collection = new TodoCollection([]);
+
+        var todosFromStore = store.get(this._collection, []);
+
+        console.log('todos from store', this._collection, todosFromStore);
+
+        for (var i = 0, l = todosFromStore.length; i < l; i++) {
+            var todo = todoFactory.createFromStoreTodo(todosFromStore[i]);
+
+            collection.add(todo);
+        }
+
+        return collection;
     },
 
     /**
