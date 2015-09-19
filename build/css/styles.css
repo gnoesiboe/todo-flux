@@ -16,8 +16,16 @@
     background: #faf4ce;
 }
 
+.todo.completed {
+    opacity: 0.4;
+}
+
 .todo-list {
 
     /* min height to make sure there is always a todo list to drop items on with drag-n-drop */
     min-height: 20px;
+}
+
+.todo-list .list-group-item {
+    padding: 0 15px;
 }

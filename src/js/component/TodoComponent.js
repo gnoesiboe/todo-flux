@@ -229,8 +229,14 @@ var TodoComponent = React.createClass({
                 <label>
                     <input type="checkbox" refs="checkbox" checked={this.props.todo.isCompleted}
                            onChange={this.handleOnCheckboxChange}/>
-                    {this._formatDate(this.props.todo.date)}&nbsp;-&nbsp;
-                    <strong>{this.props.todo.title}</strong>
+                    <div>
+                        <div>
+                            <strong>{this.props.todo.title}</strong>
+                        </div>
+                        <div>
+                            Due: {this._formatDate(this.props.todo.date)}
+                        </div>
+                    </div>
                 </label>
             </div>
         )
@@ -257,7 +263,7 @@ var TodoComponent = React.createClass({
                 throw new Error('Modus \'' + this.state.modus + '\' not supported');
         }
 
-        var className = 'list-group-item todo' + (this.props.current ? ' current' : '');
+        var className = 'list-group-item todo' + (this.props.current ? ' current' : '') + (this.props.todo.isCompleted ? ' completed' : '');
 
         return (
             <li className={className} ref="todo" data-id={this.props.todo.id}>
