@@ -17,6 +17,8 @@ var _stores = {};
 
 /**
  * @constructor
+ *
+ * @param {Array=} collection
  */
 var TodoStore = function (collection) {
 
@@ -40,10 +42,12 @@ var TodoStore = function (collection) {
 _.extend(TodoStore.prototype, EventEmitter.prototype, {
 
     /**
+     * @param {Array=} collection
+     *
      * @private
      */
     _init: function (collection) {
-        this._collection = collection;
+        this._collection = collection || [];
 
         this._initEventListeners();
     },
@@ -90,11 +94,76 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
                 this._handleTodoEdit(action);
                 break;
 
+            case ActionConstants.TODO_INDENT:
+                this._handleIndent(action);
+                break;
+
+            case ActionConstants.TODO_UNINDENT:
+                this._handleUnindent(action);
+                break;
 
             default:
                 // do nothing as this action does not concern this store
                 break;
         }
+    },
+
+    /**
+     * @param {Object} action
+     *
+     * @private
+     */
+    _handleIndent: function (action) {
+        if (this._collection !== action.collection) {
+            return;
+        }
+
+        var todo = this._todos.getAtIndex(action.index);
+
+        if (todo === null) {
+            return;
+        }
+
+        var newIndentation = todo.indentation + 1;
+
+        if (newIndentation > 2) {
+            return;
+        }
+
+        this._updateTodo(todo.id, {
+            indentation: newIndentation
+        })
+
+        this._emitChange();
+    },
+
+    /**
+     * @param {Object} action
+     *
+     * @private
+     */
+    _handleUnindent: function (action) {
+        if (this._collection !== action.collection) {
+            return;
+        }
+
+        var todo = this._todos.getAtIndex(action.index);
+
+        if (todo === null) {
+            return;
+        }
+
+        var newIndentation = todo.indentation - 1;
+
+        if (newIndentation < 0) {
+            return;
+        }
+
+        this._updateTodo(todo.id, {
+            indentation: newIndentation
+        });
+
+        this._emitChange();
     },
 
     /**
@@ -278,9 +347,19 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
      * @private
      */
     _importTodosFromStore: function () {
-        return new TodoCollection(
-            store.get(this._collection, [])
-        )
+        var collection = new TodoCollection([]);
+
+        var todosFromStore = store.get(this._collection, []);
+
+        console.log('todos from store', this._collection, todosFromStore);
+
+        for (var i = 0, l = todosFromStore.length; i < l; i++) {
+            var todo = todoFactory.createFromStoreTodo(todosFromStore[i]);
+
+            collection.add(todo);
+        }
+
+        return collection;
     },
 
     /**
