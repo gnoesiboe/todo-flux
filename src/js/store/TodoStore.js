@@ -94,11 +94,72 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
                 this._handleTodoEdit(action);
                 break;
 
+            case ActionConstants.TODO_INDENT:
+                this._handleIndent(action);
+                break;
+
+            case ActionConstants.TODO_UNINDENT:
+                this._handleUnindent(action);
+                break;
 
             default:
                 // do nothing as this action does not concern this store
                 break;
         }
+    },
+
+    /**
+     * @param {Object} action
+     *
+     * @private
+     */
+    _handleIndent: function (action) {
+        if (this._collection !== action.collection) {
+            return;
+        }
+
+        var todo = this._todos.getAtIndex(action.index);
+
+        if (todo === null) {
+            return;
+        }
+
+        var newIndentation = todo.indentation + 1;
+
+        if (newIndentation > 2) {
+            return;
+        }
+
+        this._updateTodo(todo.id, {
+            indentation: newIndentation
+        })
+    },
+
+    /**
+     * @param {Object} action
+     *
+     * @private
+     */
+    _handleUnindent: function (action) {
+        if (this._collection !== action.collection) {
+            return;
+        }
+
+        var todo = this._todos.getAtIndex(action.index);
+
+        if (todo === null) {
+            return;
+        }
+
+        var newIndentation = todo.indentation - 1;
+
+        if (newIndentation < 0) {
+            return;
+        }
+
+        this._updateTodo(todo.id, {
+            indentation: newIndentation
+        });
     },
 
     /**

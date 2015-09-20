@@ -27,6 +27,32 @@ var TodoAppComponent = React.createClass({
         mousetrap.bind('e', this.onEditKeyPressed);
         mousetrap.bind('d', this.onDeleteKeyPressed);
         mousetrap.bind('?', this.showPopupWithKeyboardShortcuts);
+        mousetrap.bind('tab', this.onIndentInitiated);
+        mousetrap.bind('shift+tab', this.onUnindentInitiated);
+    },
+
+    /**
+     * @param {Object} event
+     */
+    onUnindentInitiated: function (event) {
+        event.preventDefault();
+
+        AppDispatcher.dispatch(ActionFactory.buildTodoUnindentAction(
+            _selections[this.state.currentSelectionIndex],
+            this.state.currentTodoIndex
+        ));
+    },
+
+    /**
+     * @param {Object} event
+     */
+    onIndentInitiated: function (event) {
+        event.preventDefault();
+
+        AppDispatcher.dispatch(ActionFactory.buildTodoIndentAction(
+            _selections[this.state.currentSelectionIndex],
+            this.state.currentTodoIndex
+        ));
     },
 
     showPopupWithKeyboardShortcuts: function () {
@@ -36,7 +62,10 @@ var TodoAppComponent = React.createClass({
             '<strong>left</strong> / <strong>right</strong> / <strong>up</strong> / <strong>down</strong>: navigate through existing todos<br />' +
             '<strong>d</strong>: delete currently selected todo<br />' +
             '<strong>e</strong>: edit the currently selected todo<br />' +
-            '<strong>space</strong>: toggle complete status of currently selected todo',
+            '<strong>space</strong>: toggle complete status of currently selected todo<br />' +
+            '<strong>tab</strong>: indent todo<br />' +
+            '<strong>shift + tab</strong>: un-indent todo',
+
             html: true
         });
     },

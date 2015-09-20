@@ -80,6 +80,34 @@ var ActionFactory = {
     },
 
     /**
+     * @param {String} collection
+     * @param {Number} index
+     *
+     * @returns {Object}
+     */
+    buildTodoIndentAction: function (collection, index) {
+        return _.extend({}, _blueprint, {
+            type: ActionConstants.TODO_INDENT,
+            collection: collection,
+            index: index
+        });
+    },
+
+    /**
+     * @param {String} collection
+     * @param {Number} index
+     *
+     * @returns {Object}
+     */
+    buildTodoUnindentAction: function (collection, index) {
+        return _.extend({}, _blueprint, {
+            type: ActionConstants.TODO_UNINDENT,
+            collection: collection,
+            index: index
+        });
+    },
+
+    /**
      * @returns {Object}
      */
     buildDeleteCurrentTodoAction: function () {
