@@ -128,6 +128,8 @@ var TodoAppComponent = React.createClass({
             currentSelectionIndex: newCollectionIndex,
             currentTodoIndex: targetCollectionCount - 1 < this.state.currentTodoIndex ? targetCollectionCount - 1 : this.state.currentTodoIndex
         });
+
+        AppDispatcher.dispatch(ActionFactory.buildCollectionSelectAction(newCollection));
     },
 
     applyNextCollectionSelected: function () {
@@ -139,6 +141,8 @@ var TodoAppComponent = React.createClass({
             currentSelectionIndex: newCollectionIndex,
             currentTodoIndex: targetCollectionCount - 1 < this.state.currentTodoIndex ? targetCollectionCount - 1 : this.state.currentTodoIndex
         });
+
+        AppDispatcher.dispatch(ActionFactory.buildCollectionSelectAction(newCollection));
     },
 
     /**

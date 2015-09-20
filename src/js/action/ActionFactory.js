@@ -108,6 +108,20 @@ var ActionFactory = {
     },
 
     /**
+     * @param {String} collection
+     *
+     * @returns {Object}
+     */
+    buildCollectionSelectAction: function (collection) {
+        console.log('select collection', collection);
+
+        return _.extend({}, _blueprint, {
+            type: ActionConstants.TODO_COLLECTION_SELECT,
+            collection: collection
+        });
+    },
+
+    /**
      * @returns {Object}
      */
     buildDeleteCurrentTodoAction: function () {
