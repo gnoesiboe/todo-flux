@@ -8,6 +8,7 @@ var React = require('react'),
     todoStore = require('./../store/TodoStore'),
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
     ActionFactory = require('./../action/ActionFactory'),
+    ActionConstants = require('./../constants/ActionConstants'),
     sweetalert = require('sweetalert');
 
 var _selections = [
@@ -29,6 +30,18 @@ var TodoAppComponent = React.createClass({
         mousetrap.bind('?', this.showPopupWithKeyboardShortcuts);
         mousetrap.bind('tab', this.onIndentInitiated);
         mousetrap.bind('shift+tab', this.onUnindentInitiated);
+
+        AppDispatcher.register(function (action) {
+            switch (action.type) {
+                case ActionConstants.TODO_CREATE:
+                    this.handleTodoCreateAction(action);
+                    break;
+
+                default:
+                    // do nothing as this action is not interesting for this component
+                    break;
+            }
+        }.bind(this));
     },
 
     /**
@@ -143,6 +156,24 @@ var TodoAppComponent = React.createClass({
         });
 
         AppDispatcher.dispatch(ActionFactory.buildCollectionSelectAction(newCollection));
+    },
+
+    /**
+     * @param {Object} action
+     */
+    handleTodoCreateAction: function (action) {
+        var selectionIndex = _selections.indexOf(action.collection);
+
+        if (selectionIndex === -1) {
+            return;
+        }
+
+        var index = action.index === null ? todoStore.get(action.collection).count() - 1 : action.index;
+
+        this.setState({
+            currentSelectionIndex: selectionIndex,
+            currentTodoIndex: index
+        });
     },
 
     /**
