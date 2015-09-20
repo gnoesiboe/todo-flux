@@ -351,8 +351,6 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
 
         var todosFromStore = store.get(this._collection, []);
 
-        console.log('todos from store', this._collection, todosFromStore);
-
         for (var i = 0, l = todosFromStore.length; i < l; i++) {
             var todo = todoFactory.createFromStoreTodo(todosFromStore[i]);
 

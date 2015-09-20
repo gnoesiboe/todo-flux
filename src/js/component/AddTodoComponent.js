@@ -1,6 +1,7 @@
 var React = require('react'),
     AppDispatcher = require('./../dispatcher/AppDispatcher'),
     ActionFactory = require('./../action/ActionFactory'),
+    ActionConstants = require('./../constants/ActionConstants'),
     moment = require('moment'),
     mousetrap = require('mousetrap');
 
@@ -11,6 +12,24 @@ var AddTodoComponent = React.createClass({
      */
     componentDidMount: function () {
         mousetrap.bind(['c', 'a'], this.onCreateTodoInitiated);
+
+        AppDispatcher.register(function (action) {
+            switch (action.type) {
+                case ActionConstants.TODO_COLLECTION_SELECT:
+                    this.handleTodoCollectionSelected(action);
+                    break;
+
+                default:
+                    // do nothing, action not relevant for this component
+                    break;
+            }
+        }.bind(this));
+    },
+
+    handleTodoCollectionSelected: function (action) {
+        this.setState({
+            collection: action.collection
+        });
     },
 
     /**
