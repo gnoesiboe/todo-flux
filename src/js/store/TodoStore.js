@@ -133,6 +133,8 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
         this._updateTodo(todo.id, {
             indentation: newIndentation
         })
+
+        this._emitChange();
     },
 
     /**
@@ -160,6 +162,8 @@ _.extend(TodoStore.prototype, EventEmitter.prototype, {
         this._updateTodo(todo.id, {
             indentation: newIndentation
         });
+
+        this._emitChange();
     },
 
     /**

@@ -263,7 +263,9 @@ var TodoComponent = React.createClass({
                 throw new Error('Modus \'' + this.state.modus + '\' not supported');
         }
 
-        var className = 'list-group-item todo' + (this.props.current ? ' current' : '') + (this.props.todo.isCompleted ? ' completed' : '');
+        var className = 'list-group-item todo indent-' + this.props.todo.indentation +
+            (this.props.current ? ' current' : '') +
+            (this.props.todo.isCompleted ? ' completed' : '');
 
         return (
             <li className={className} ref="todo" data-id={this.props.todo.id}>
