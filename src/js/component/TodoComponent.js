@@ -4,7 +4,8 @@ var React = require('react'),
     moment = require('moment'),
     modusConstants = require('./../constants/ModusConstants'),
     ActionConstants = require('./../constants/ActionConstants'),
-    sweetalert = require('sweetalert');
+    sweetalert = require('sweetalert'),
+    markdown = require('markdown').markdown;
 
 var TodoComponent = React.createClass({
 
@@ -230,9 +231,7 @@ var TodoComponent = React.createClass({
                     <input type="checkbox" refs="checkbox" checked={this.props.todo.isCompleted}
                            onChange={this.handleOnCheckboxChange}/>
                     <div>
-                        <div>
-                            <strong>{this.props.todo.title}</strong>
-                        </div>
+                        <div dangerouslySetInnerHTML={{ __html: markdown.toHTML(this.props.todo.title) }} />
                         <div>
                             Due: {this._formatDate(this.props.todo.date)}
                         </div>
